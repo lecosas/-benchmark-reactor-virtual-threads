@@ -3,8 +3,6 @@ package io.backendscience.benchmarkreactorvirtualthreads.virtual.api.controller;
 import io.backendscience.benchmarkreactorvirtualthreads.domain.Post;
 import io.backendscience.benchmarkreactorvirtualthreads.domain.Todo;
 import io.backendscience.benchmarkreactorvirtualthreads.domain.User;
-import io.backendscience.benchmarkreactorvirtualthreads.reactor.api.controller.ReactorController;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,6 +10,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.logging.Logger;
 
 @RestController()
@@ -35,15 +34,15 @@ public class VirtualThreadController {
 
         try {
             // Creating virtual threads for each of the tasks
-            var todoFuture = executorService.submit(() -> fetchTodo());
+            Future<Todo> todoFuture = executorService.submit(this::fetchTodo);
 
             logger.info("Enviou Todo");
 
-            var postFuture = executorService.submit(() -> fetchPost());
+            Future<Post> postFuture = executorService.submit(this::fetchPost);
 
             logger.info("Enviou Post");
 
-            var userFuture = executorService.submit(() -> fetchUser((Integer) todoFuture.get().userId()));
+            Future<User> userFuture = executorService.submit(() -> fetchUser((Integer) todoFuture.get().userId()));
 
             logger.info("Enviou User");
 
@@ -56,6 +55,10 @@ public class VirtualThreadController {
 
             User user = userFuture.get();
             logger.info("Get User");
+
+            logger.info("TODO: " + todo +
+                    "\nPOST: " + post +
+                    "\nUSER: " + user);
 
             // Combine results
             return "TODO: " + todo +

@@ -3,8 +3,8 @@ import { check, sleep } from 'k6';
 
 export const options = {
   stages: [
-    { duration: '30s', target: 1000 }, // ramp up to 100 requests
-    { duration: '30s', target: 1000 }, // hold at 100 requests for 2 minutes
+    { duration: '30s', target: 1000 }, // ramp up to 1000 requests
+    { duration: '30s', target: 1000 }, // hold at 1000 requests for 2 minutes
     { duration: '30s', target: 0 },   // ramp down to 0 requests
   ],
 };
